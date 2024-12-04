@@ -16,8 +16,12 @@ class GetBooruTag():
     FUNCTION = 'gettag'
     CATEGORY = 'Danbooru'
 
-    def gettag(self, url="", text_a="", text_b="", text_c="", my_unique_id=None): 
-        out = f"{text_a.rstrip(' ,')},\n\n{text_b.rstrip(' ,')},\n\n{text_c.rstrip(' ,')},"
+    def gettag(self, url="", text_a="", text_b="", text_c="", my_unique_id=None):
+        strip = " ,\n"
+        if text_c == "":
+            out = f"{text_a.rstrip(strip)},\n\n{text_b.rstrip(strip)},"
+        else:
+            out = f"{text_a.rstrip(strip)},\n\n{text_b.rstrip(strip)},\n\n{text_c.rstrip(strip)},"
         return (out,)
 
 
