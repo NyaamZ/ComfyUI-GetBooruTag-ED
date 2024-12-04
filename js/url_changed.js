@@ -23,6 +23,7 @@ api.addEventListener("feedback_node_br", nodeFeedbackHandlerBr); */
 //////////////////////////////////////////////////////////
 
 let initialized = false;
+let prev_url;
 
 export const findWidgetByName = (node, name) => {
     return node.widgets ? node.widgets.find((w) => w.name === name) : null;
@@ -51,8 +52,15 @@ function widgetLogic(node, widget) {
 
 // Booru_loader_ED Handlers
 async function handleGetBooruTag(node, widget) {
+	if (!initialized || prev_url == widget.value) {
+		prev_url = widget.value;
+		return;
+	}
+	prev_url = widget.value;	
+	
 	//const adjustment  = node.size[1];
-    const tagsWidget = findWidgetByName(node, "tags");
+    const tagsWidget = findWidgetByName(node, "text_b");
+	const proxy = 'https://corsproxy.io/?';
 
     // 태그 설정 함수
     function setTags(tags) {
@@ -76,14 +84,22 @@ async function handleGetBooruTag(node, widget) {
     }
 
     if (widget.value.includes('danbooru')) {
-        const url = widget.value.split("?")[0] + '.json';
-        const data = await fetchData(url);
-        if (data) setTags(data.tag_string_general);
-    }
+        const baseDanbooruUrl = "https://danbooru.donmai.us/";
+        const match = /posts\/(\d+)/.exec(widget.value);
 
-    if (widget.value.includes('gelbooru')) {
+        if (match) {
+            const url = baseDanbooruUrl + match[0] + '.json';
+            const data = await fetchData(url);
+            if (data) {
+                setTags(data.tag_string_general);
+				console.log('tag loading success.');
+            }
+        } else {
+            showError('ID was not found in Danbooru URL.');
+        }
+    }
+    else if (widget.value.includes('gelbooru')) {
         const baseGelbooruUrl = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&pid=38&";
-        const proxy = 'https://corsproxy.io/?';
         const match = /id=(\d+)/.exec(widget.value);
 
         if (match) {
@@ -91,6 +107,7 @@ async function handleGetBooruTag(node, widget) {
             const data = await fetchData(url);
             if (data && data.post && data.post[0]) {
                 setTags(data.post[0].tags);
+				console.log('tag loading success.');
             }
         } else {
             showError('ID was not found in Gelbooru URL.');
@@ -136,7 +153,7 @@ app.registerExtension({
                 }
             });
         }
-        setTimeout(() => {initialized = true;}, 500);
+        setTimeout(() => {initialized = true;}, 1000);
     }
 });
 
