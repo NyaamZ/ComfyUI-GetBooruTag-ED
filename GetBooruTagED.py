@@ -2,8 +2,10 @@ class GetBooruTag():
     @classmethod
     def INPUT_TYPES(s):
         return {
-            "optional": {
+            "required": {
                 "url": ('STRING', {'multiline': False}),
+            },
+            "optional": {                
                 "text_a": ("STRING", {"multiline": True, "dynamicPrompts": True}),
                 "text_b": ("STRING", {"multiline": True, "dynamicPrompts": True}),
                 "text_c": ("STRING", {"multiline": True, "dynamicPrompts": True}),
@@ -16,12 +18,16 @@ class GetBooruTag():
     FUNCTION = 'gettag'
     CATEGORY = 'Danbooru'
 
-    def gettag(self, url="", text_a="", text_b="", text_c="", my_unique_id=None):
+    def gettag(self, url, text_a="", text_b="", text_c="", my_unique_id=None):
         strip = " ,\n"
-        if text_c == "":
-            out = f"{text_a.rstrip(strip)},\n\n{text_b.rstrip(strip)},"
-        else:
-            out = f"{text_a.rstrip(strip)},\n\n{text_b.rstrip(strip)},\n\n{text_c.rstrip(strip)},"
+        out = ""
+        if text_a != "":
+            out = f"{text_a.lstrip(strip).rstrip(strip)},\n\n"
+        if text_b != "":
+            out += f"{text_b.lstrip(strip).rstrip(strip)},\n\n"
+        if text_c != "":
+            out += f"{text_c.lstrip(strip).rstrip(strip)},\n\n"
+        out = f"{out.rstrip(strip)},"
         return (out,)
 
 
