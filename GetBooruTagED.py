@@ -26,7 +26,7 @@ class GetBooruTag():
         if text_b != "":
             out += f"{text_b.lstrip(strip).rstrip(strip)},\n\n"
         if text_c != "":
-            out += f"{text_c.lstrip(strip).rstrip(strip)},\n\n"
+            out += f"{text_c.lstrip(strip).rstrip(strip)}"
         out = f"{out.rstrip(strip)},"
         return (out,)
 
