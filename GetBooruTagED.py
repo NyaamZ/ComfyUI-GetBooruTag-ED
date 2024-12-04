@@ -14,7 +14,7 @@ class GetBooruTag():
         }
 
     RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("TEXT",)
+    RETURN_NAMES = ("STRING",)
     FUNCTION = 'gettag'
     CATEGORY = 'Efficiency Nodes/Simple Eval'
 
