@@ -16,7 +16,7 @@ class GetBooruTag():
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("TEXT",)
     FUNCTION = 'gettag'
-    CATEGORY = 'Danbooru'
+    CATEGORY = 'Efficiency Nodes/Simple Eval'
 
     def gettag(self, url, text_a="", text_b="", text_c="", my_unique_id=None):
         strip = " ,\n"
