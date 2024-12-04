@@ -2,7 +2,7 @@ class GetBooruTag():
     @classmethod
     def INPUT_TYPES(s):
         return {
-            "required": {
+            "optional": {
                 "url": ('STRING', {'multiline': False}),
                 "text_a": ("STRING", {"multiline": True, "dynamicPrompts": True}),
                 "text_b": ("STRING", {"multiline": True, "dynamicPrompts": True}),
@@ -16,7 +16,7 @@ class GetBooruTag():
     FUNCTION = 'gettag'
     CATEGORY = 'Danbooru'
 
-    def gettag(self, url, text_a, text_b, text_c, my_unique_id): 
+    def gettag(self, url="", text_a="", text_b="", text_c="", my_unique_id=None): 
         out = f"{text_a.rstrip(' ,')},\n\n{text_b.rstrip(' ,')},\n\n{text_c.rstrip(' ,')},"
         return (out,)
 
