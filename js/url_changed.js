@@ -1,5 +1,5 @@
 import { app } from "../../scripts/app.js";
-/* import { api } from "../../scripts/api.js";
+import { api } from "../../scripts/api.js";
 
 function nodeFeedbackHandlerBr(event) {
   const { node_id, widget_name, type, data } = event.detail;
@@ -18,7 +18,7 @@ function nodeFeedbackHandlerBr(event) {
   }
 }
 
-api.addEventListener("feedback_node_br", nodeFeedbackHandlerBr); */
+api.addEventListener("feedback_node_br", nodeFeedbackHandlerBr);
 
 //////////////////////////////////////////////////////////
 

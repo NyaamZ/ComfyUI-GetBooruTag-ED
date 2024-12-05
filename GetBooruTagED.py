@@ -1,9 +1,11 @@
+from server import PromptServer
+
 class GetBooruTag():
     @classmethod
     def INPUT_TYPES(s):
         return {
             "required": {
-                "url": ('STRING', {'multiline': False}),
+                "url": ("STRING", {"default": "None", "multiline": False}),
             },
             "optional": {                
                 "text_a": ("STRING", {"multiline": True, "dynamicPrompts": True}),
@@ -28,6 +30,7 @@ class GetBooruTag():
         if text_c != "":
             out += f"{text_c.lstrip(strip).rstrip(strip)}"
         out = f"{out.rstrip(strip)},"
+        PromptServer.instance.send_sync("feedback_node_br", {"node_id": my_unique_id, "widget_name": "url", "type": "text", "data": "None"})
         return (out,)
 
 
