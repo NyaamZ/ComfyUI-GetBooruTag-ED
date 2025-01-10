@@ -50,7 +50,12 @@ function widgetLogic(node, widget) {
 }
 
 function htmlUnescape (string) {
-	let str = string.replaceAll("&#039;", "'")
+	let str = string;
+	str = str.replaceAll("&amp;", "&")
+	str = str.replaceAll('&quot;', '"')
+	str = str.replaceAll("&#039;", "'")
+	str = str.replaceAll("&lt;", "<")
+	str = str.replaceAll("&gt;", ">")
 	return str;
 }
 
