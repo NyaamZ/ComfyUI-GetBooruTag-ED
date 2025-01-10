@@ -49,6 +49,10 @@ function widgetLogic(node, widget) {
     }
 }
 
+function htmlUnescape (string) {
+	let str = string.replaceAll("&#039;", "'")
+	return str;
+}
 
 // Booru_loader_ED Handlers
 async function handleGetBooruTag(node, widget) {
@@ -64,11 +68,12 @@ async function handleGetBooruTag(node, widget) {
 
     // 태그 설정 함수
     function setTags(tags) {
-        tagsWidget.value = tags.replaceAll(' ', ', ') + ",";
+		let tag_data = htmlUnescape(tags.replaceAll(' ', ', ') + ",");
+        tagsWidget.value = tag_data;
     }
     // 에러 표시
     function showError(error) {
-        tagsWidget.value = 'Error: ' + error + '\n\n\n' + tagsWidget.value;
+        tagsWidget.value = error + '\n\n\n' + tagsWidget.value;
     }
 
     // 에러 처리 및 데이터 요청 함수
@@ -92,7 +97,7 @@ async function handleGetBooruTag(node, widget) {
             const data = await fetchData(url);
             if (data) {
                 setTags(data.tag_string_general);
-				console.log('tag loading success.');
+				console.log('tag loading success : \n' + url );
             }
         } else {
             showError('ID was not found in Danbooru URL.');
@@ -103,11 +108,11 @@ async function handleGetBooruTag(node, widget) {
         const match = /id=(\d+)/.exec(widget.value);
 
         if (match) {
-            const url = proxy + encodeURIComponent(baseGelbooruUrl + match[0]);
+			const url = proxy + baseGelbooruUrl + match[0];
             const data = await fetchData(url);
             if (data && data.post && data.post[0]) {
                 setTags(data.post[0].tags);
-				console.log('tag loading success.');
+				console.log('tag loading success : \n' + url );
             }
         } else {
             showError('ID was not found in Gelbooru URL.');
