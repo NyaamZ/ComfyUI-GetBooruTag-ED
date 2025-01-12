@@ -58,7 +58,7 @@ function htmlUnescape (string) {
 
 // Booru_loader_ED Handlers
 async function handleGetBooruTag(node, widget) {	
-	if (!widget.value.includes('booru')) return;
+	if (!(widget.value.includes('danbooru') || widget.value.includes('gelbooru'))) return;
 
     const tagsWidget = findWidgetByName(node, "text_b");
 	const proxy = 'https://corsproxy.io/?';
@@ -93,7 +93,8 @@ async function handleGetBooruTag(node, widget) {
             const url = baseDanbooruUrl + match[0] + '.json';
             const data = await fetchData(url);
             if (data) {
-                setTags(data.tag_string_general);				
+                setTags(data.tag_string_general);
+				widget.value = widget.value.replaceAll("danbooru", "Danbooru");
 				console.log('Tags loading success :\n' + url );
             } else {
 				showError('ERROR: Tags was not found in JSON file.');
@@ -110,7 +111,8 @@ async function handleGetBooruTag(node, widget) {
 			const url = proxy + baseGelbooruUrl + match[0];
             const data = await fetchData(url);
             if (data && data.post && data.post[0]) {
-                setTags(data.post[0].tags);				
+                setTags(data.post[0].tags);
+				widget.value = widget.value.replaceAll("gelbooru", "Gelbooru");
 				console.log('Tags loading success :\n' + url );
             } else {
 				showError('ERROR: Tags was not found in JSON file.');
@@ -118,8 +120,7 @@ async function handleGetBooruTag(node, widget) {
         } else {
             showError('ERROR: ID was not found in Gelbooru URL.');
         }
-    }
-	widget.value = widget.value.replaceAll("booru", "Booru");
+    }	
 }
 
 
