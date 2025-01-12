@@ -1,29 +1,25 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 
-function nodeFeedbackHandlerBr(event) {
-  const { node_id, widget_name, type, data } = event.detail;
-  const nodes = app.graph._nodes_by_id;
-  const node = nodes[node_id];
+// function nodeFeedbackHandlerBr(event) {
+  // const { node_id, widget_name, type, data } = event.detail;
+  // const nodes = app.graph._nodes_by_id;
+  // const node = nodes[node_id];
 
-  if (widget_name === "log") {
-    console.log(`ED_log: ${data}`);
-  }
+  // if (widget_name === "log") {
+    // console.log(`ED_log: ${data}`);
+  // }
 
-  if (node && type === "text") {
-    const widget = node.widgets.find((w) => w.name === widget_name);
-    if (widget) {
-      widget.value = data;
-    }
-  }
-}
+  // if (node && type === "text") {
+    // const widget = node.widgets.find((w) => w.name === widget_name);
+    // if (widget) {
+      // widget.value = data;
+    // }
+  // }
+// }
 
-api.addEventListener("feedback_node_br", nodeFeedbackHandlerBr);
-
+// api.addEventListener("feedback_node_br", nodeFeedbackHandlerBr);
 //////////////////////////////////////////////////////////
-
-let initialized = false;
-let prev_url;
 
 export const findWidgetByName = (node, name) => {
     return node.widgets ? node.widgets.find((w) => w.name === name) : null;
@@ -61,14 +57,9 @@ function htmlUnescape (string) {
 }
 
 // Booru_loader_ED Handlers
-async function handleGetBooruTag(node, widget) {
-	if (!initialized || prev_url == widget.value) {
-		prev_url = widget.value;
-		return;
-	}
-	prev_url = widget.value;	
-	
-	//const adjustment  = node.size[1];
+async function handleGetBooruTag(node, widget) {	
+	if (!widget.value.includes('booru')) return;
+
     const tagsWidget = findWidgetByName(node, "text_b");
 	const proxy = 'https://corsproxy.io/?';
 
@@ -79,7 +70,7 @@ async function handleGetBooruTag(node, widget) {
     }
     // 에러 표시
     function showError(error) {
-        tagsWidget.value = error + '\n\n\n' + tagsWidget.value;
+        tagsWidget.value = '// ' + error + '\n\n' + tagsWidget.value;
     }
 
     // 에러 처리 및 데이터 요청 함수
@@ -102,11 +93,13 @@ async function handleGetBooruTag(node, widget) {
             const url = baseDanbooruUrl + match[0] + '.json';
             const data = await fetchData(url);
             if (data) {
-                setTags(data.tag_string_general);
-				console.log('tag loading success : \n' + url );
-            }
+                setTags(data.tag_string_general);				
+				console.log('Tags loading success :\n' + url );
+            } else {
+				showError('ERROR: Tags was not found in JSON file.');
+			}
         } else {
-            showError('ID was not found in Danbooru URL.');
+            showError('ERROR: ID was not found in Danbooru URL.');
         }
     }
     else if (widget.value.includes('gelbooru')) {
@@ -117,14 +110,16 @@ async function handleGetBooruTag(node, widget) {
 			const url = proxy + baseGelbooruUrl + match[0];
             const data = await fetchData(url);
             if (data && data.post && data.post[0]) {
-                setTags(data.post[0].tags);
-				console.log('tag loading success : \n' + url );
-            }
+                setTags(data.post[0].tags);				
+				console.log('Tags loading success :\n' + url );
+            } else {
+				showError('ERROR: Tags was not found in JSON file.');
+			}
         } else {
-            showError('ID was not found in Gelbooru URL.');
+            showError('ERROR: ID was not found in Gelbooru URL.');
         }
     }
-	//if (node.size[1] < adjustment) 	node.setSize([node.size[0], adjustment]);
+	widget.value = widget.value.replaceAll("booru", "Booru");
 }
 
 
@@ -164,7 +159,6 @@ app.registerExtension({
                 }
             });
         }
-        setTimeout(() => {initialized = true;}, 1000);
     }
 });
 
